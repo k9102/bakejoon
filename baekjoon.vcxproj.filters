@@ -20,10 +20,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="1003.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="1003.cpp">
+    <ClCompile Include="1005.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
