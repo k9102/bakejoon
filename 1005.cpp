@@ -1,35 +1,26 @@
 #include <iostream>
 #include <vector>
-#include <tuple>
 #include <map>
-#include <limits.h>
 
 using namespace std;
 
-int T;
-int N, K;
-int W;
+int T, N, K, W;
 
 vector<int>  D;
 vector<vector<int>> S;
-map<int, int> ca;
+map<int, int> C;
 
 int traverse(int w)
 {
-	int mx = INT_MIN;
-
-	if (ca.find(w) != end(ca)) return ca[w];
-
+	int mx = 0;
+	if (C.find(w) != end(C)) return C[w];
 	for (int p : S[w])
 	{
 		int tm = traverse(p) + D[p];
 		if (mx < tm) mx = tm;
 	}
-
-	int ret = mx == INT_MIN ? 0 : mx;
-	ca[w] = ret;
-
-	return ret;
+	C[w] = mx;
+	return mx;
 }
 
 int main()
@@ -44,7 +35,7 @@ int main()
 
 		D.clear();
 		S.clear();
-		ca.clear();
+		C.clear();
 		D.resize(N + 1);
 		S.resize(N + 1);
 
@@ -54,7 +45,7 @@ int main()
 		}
 
 
-		for (int i = 1; i <= K; i++)
+		for (int i = 0; i < K; i++)
 		{
 			int X, Y;
 			cin >> X >> Y;
