@@ -3,8 +3,6 @@
 #include <tuple>
 #include <map>
 #include <limits.h>
-#include <stack>
-#include <algorithm>
 
 using namespace std;
 
@@ -16,41 +14,22 @@ vector<int>  D;
 vector<vector<int>> S;
 map<int, int> ca;
 
-int traverse_(int W_)
+int traverse(int w)
 {
-	int r = 0;
-	int pop =  false;
+	int mx = INT_MIN;
 
-	stack<tuple<int, int, int>> st;
+	if (ca.find(w) != end(ca)) return ca[w];
 
-	st.push({W_,0,0});
-	while (!st.empty())
+	for (int p : S[w])
 	{
-		auto &[w,mx,i] = st.top();
-		if (pop) {
-			pop = false;
-			mx = max(r, mx);
-		}
-		
-		if (i < S[w].size()) {
-			if (ca.find(S[w][i]) != end(ca)) {
-				r = ca[S[w][i]];
-				pop = true;
-			}
-			else {
-				st.push({ S[w][i],0 ,0 });
-			}
-			i++;
-		}
-		else {
-			r = mx+D[w];
-			ca[w] = r;
-			st.pop();
-			pop = true;
-		}
+		int tm = traverse(p) + D[p];
+		if (mx < tm) mx = tm;
 	}
 
-	return r;
+	int ret = mx == INT_MIN ? 0 : mx;
+	ca[w] = ret;
+
+	return ret;
 }
 
 int main()
@@ -67,7 +46,7 @@ int main()
 		S.clear();
 		ca.clear();
 		D.resize(N + 1);
-		S.resize(K + 1);
+		S.resize(N + 1);
 
 		for (int i = 1; i <= N; i++)
 		{
@@ -75,7 +54,7 @@ int main()
 		}
 
 
-		for (int i = 0; i < K; i++)
+		for (int i = 1; i <= K; i++)
 		{
 			int X, Y;
 			cin >> X >> Y;
@@ -83,7 +62,7 @@ int main()
 		}
 
 		cin >> W;
-		R.push_back(traverse_(W));
+		R.push_back(traverse(W) + D[W]);
 
 	}
 
@@ -91,19 +70,5 @@ int main()
 	{
 		cout << R[t] << endl;
 	}
-	return 0;
+
 }
-
-
-/*
-1
-4 5
-10 1 100 10
-1 2
-1 3
-2 4
-3 4
-2 3
-4
-*/
-
