@@ -7,15 +7,18 @@
 using namespace std;
 
 int N, M, D;
-int map[15][15];
+
 
 int main()
 {
 	cin >> N >> M >> D;
+
+	vector<vector<int>> data(N,vector<int>(M));
+
 	for (int r = 0; r < N; r++)
 		for (int c = 0; c < M; c++)
-			cin >> map[r][c];
-	
+			cin >> data[r][c];
+
 	vector<bool> tbl(M);
 	tbl[M - 1] = true; tbl[M - 2] = true; tbl[M - 3] = true;
 
@@ -24,38 +27,55 @@ int main()
 	do {
 
 		int dead = 0;
-		for (int ar_c = 0; ar_c < M; ar_c++)
+		
+		auto map = data;
+
+		for (int ar_r = N; ar_r >= 1; ar_r--)
 		{
-			if (tbl[ar_c])
+			vector<pair<int, int>> dp = {};
+			for (int ar_c = 0; ar_c < M; ar_c++)
 			{
-				for (int ar_r = N; ar_r <= 1; ar_r--)
+				if (tbl[ar_c])
 				{
 					pair<int, int> mp;
 					int md = INT_MAX;
-					for(int r=0;r<ar_r;r++)
-					for (int c = 0; c < M; c++)
-					{
-						int dr = ar_r - r;
-						int dc = ar_c - c > 0 ? ar_c-c:c-ar_c;
-
-						if (dr + dc < md)
+					for (int r = 0; r < ar_r; r++)
+						for (int c = 0; c < M; c++)
 						{
-							mp = { r,c };
-							md = dr + dc;
+							if (map[r][c])
+							{
+								int dr = ar_r - r;
+								int dc = max(ar_c - c, c - ar_c);
+								int d = dr + dc;
+								if (d<=D && d<=md)
+								{
+									mp = { r,c };
+									md = dr + dc;
+								}
+							}
 						}
-					}
 
-					if (md == INT_MAX) { break; }
+					if (md == INT_MAX) continue;
 					auto[r, c] = mp;
-					map[r][c] = 0;
-					dead++;
+					if (map[r][c] != 2)
+					{
+						dp.push_back(mp);
+						map[r][c] = 2;
+						dead++;
+					}
 				}
+			}
+
+			for (auto[r, c] : dp)
+			{
+				map[r][c] = 0;
 			}
 		}
 
 		mx_dead = max(mx_dead, dead);
+	} while (next_permutation(begin(tbl), end(tbl)));
 
-	} while (next_permutation(begin(tbl),end(tbl)));
-
+	std::cout << mx_dead << endl;
+	
 	return 0;
 }
