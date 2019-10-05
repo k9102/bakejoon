@@ -8,7 +8,6 @@ using namespace std;
 
 int N, M, D;
 
-
 int main()
 {
 	cin >> N >> M >> D;
@@ -39,15 +38,15 @@ int main()
 				{
 					pair<int, int> mp;
 					int md = INT_MAX;
+					for (int c = 0; c < M; c++)
 					for (int r = 0; r < ar_r; r++)
-						for (int c = 0; c < M; c++)
 						{
 							if (map[r][c])
 							{
 								int dr = ar_r - r;
 								int dc = max(ar_c - c, c - ar_c);
 								int d = dr + dc;
-								if (d<=D && d<=md)
+								if (d<=D && md>d)
 								{
 									mp = { r,c };
 									md = dr + dc;
@@ -71,7 +70,6 @@ int main()
 				map[r][c] = 0;
 			}
 		}
-
 		mx_dead = max(mx_dead, dead);
 	} while (next_permutation(begin(tbl), end(tbl)));
 
