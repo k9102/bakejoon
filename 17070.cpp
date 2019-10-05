@@ -1,53 +1,49 @@
 #include <iostream>
-#include <vector>
-#include <tuple>
-#include <string>
 
 using namespace std;
 
 int N;
 int map[16][16];
-int mv[3][2] = { {0,1},{1,1},{1,0} };
-int pb[3][3] =
+int mv[4][2] = { {0,1},{1,1},{1,0},{0,0} };
+
+int cango[3][3] = 
 {
-	{true,true,false},
-	{true,true,true},
-	{false,true,false}
+{true,true,false},
+{true,true,true},
+{false,true,true}
 };
 
-pair<int,int> ck[3][3] = 
+int cp[3][3] = 
 {
-	{{0,1},{0,0},{0,0}},
-	{{0,1},{1,1},{1,0}},
-	{{1,0},{0,0},{0,0}}
+	{0,3,3},
+	{0,1,2},
+	{2,3,3}
 };
 
-bool Blocked(int r, int c)
+inline bool Blocked(int r, int c)
 {
-	if (r >= N || c >= N) 
-		return false;
+	if (r >= N || c >= N) return true;
 	
 	return map[r][c];
 
 }
-bool CanGo(int r,int c,int cdr,int ndr)
+inline bool CanGo(int r,int c,int cdr,int ndr)
 {
-	if (mv[cdr][ndr] == false) return false;
+	if (!cango[cdr][ndr]) return false;
 
 	for (int i = 0; i < 3; i++)
 	{
-		auto [r_,c_] = ck[cdr][i];
-		if (Blocked(r + r_, c + c_)) 
-			return false;
+		auto [r_,c_] = mv[cp[ndr][i]];
+		if (Blocked(r + r_, c + c_)) return false;
 	}
 
 	return true;
-
 }
 
 int paths = 0;
 void traverse(int r,int c,int dir)
 {
+
 	if (r == N - 1 && c == N - 1)
 	{
 		paths++;
@@ -57,7 +53,7 @@ void traverse(int r,int c,int dir)
 	for (int i = 0; i < 3; i++)
 	{
 		if (CanGo(r, c, dir, i)) {
-			auto[r_, c_] = ck[dir][i];
+			auto[r_, c_] = mv[i];
 			traverse(r + r_, c + c_, i);
 		}
 	}
@@ -66,17 +62,11 @@ void traverse(int r,int c,int dir)
 
 int main()
 {
-	string str;
 	cin >> N;
-	getline(std::cin, str);
-	for (int i = 0; i < N; i++)
-	{
-		getline(std::cin, str);
-		for (int j = 0; j < str.size(); j++)
-		{
-			if (j % 2 == 0) map[i][j / 2] = str[j]=='0' ? 0:1;
-		}
-	}
+
+	for (int r = 0; r < N; r++)
+	for (int c = 0; c < N; c++)
+		cin >> map[r][c];
 
 	traverse(0, 1, 0);
 
