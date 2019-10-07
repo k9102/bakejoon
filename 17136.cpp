@@ -3,7 +3,6 @@
 #include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
 #include <limits.h>
 
 using namespace std;
@@ -24,10 +23,10 @@ bool Covered(const M2D &mat, COO rc, int sz)
 		return false;
 
 	for (int y = r; y < r + sz; y++)
-		for (int x = c; x < c + sz; x++)
-		{
-			if (mat[y][x] != 1) return false;
-		}
+	for (int x = c; x < c + sz; x++)
+	{
+		if (mat[y][x] != 1) return false;
+	}
 
 	return true;
 
@@ -37,25 +36,27 @@ void Clr(M2D &mat, COO rc, int sz)
 {
 	auto[r, c] = rc;
 	for (int y = r; y < r + sz; y++)
-		for (int x = c; x < c + sz; x++)
-		{
-			mat[y][x] = 0;
-		}
+	for (int x = c; x < c + sz; x++)
+	{
+		mat[y][x] = 0;
+	}
 }
 
 int crds[5+1] = { 0,5,5,5,5,5};
 int min_crds = INT_MAX;
-bool traverse(M2D mat, COO rc, int sz)
+int crdcnt=0;
+void traverse(M2D mat, COO rc, int sz)
 {
 	auto[r, c] = rc;
 
-	if (crds[sz] == 0) return true; /*run out of card*/
+	if (crds[sz] == 0) return; /*run out of card*/
 
-	if (!Covered(mat, rc, sz)) return false;
+	if (!Covered(mat, rc, sz)) return;
 
 	Clr(mat, rc, sz);
 
 	crds[sz]--;
+	crdcnt++;
 
 	int cur = r * N + c+1;
 	for (; cur < N*N; cur++)
@@ -66,42 +67,49 @@ bool traverse(M2D mat, COO rc, int sz)
 	}
 
 	if (cur == N * N) { /*sucess to cover the board*/
-		int sum = accumulate(begin(crds), end(crds), 0);
-		min_crds = min(min_crds,25 - sum);
+		min_crds = min(min_crds,crdcnt);
 	}
 	else
 	{
-		for (int sz = 1; sz <= 5; sz++)
+		if (crdcnt < min_crds)
 		{
-			int ret = traverse(mat, { r,c }, sz);
-			if (!ret) break;
+			for (int sz = 5; sz >= 1; sz--)
+			{
+				traverse(mat, { r,c }, sz);
+			}
 		}
 	}
 
 	crds[sz]++;
-
-	return true;
+	crdcnt--;
 }
 
 int main()
 {
 	for (int r = 0; r < N; r++)
-		for (int c = 0; c < N; c++)
-			cin >> mat_[r][c];
+	for (int c = 0; c < N; c++)
+		cin >> mat_[r][c];
 
 
 	int r, c;
-	for (int cur=0; cur < N*N; cur++)
+	int cur;
+	for (cur=0; cur < N*N; cur++)
 	{
 		tie(r, c) = pair{ cur / N, cur%N };
 		if (mat_[r][c])
 			break;
 	}
 
-	for (int sz = 1; sz <= 5; sz++)
+	if (cur == N * N)
 	{
-		int ret = traverse(mat_, { r,c }, sz);
-		if (!ret) break;
+		min_crds = 0;
+	}
+	else
+	{
+		for (int sz = 5; sz >= 1; sz--)
+		{
+			traverse(mat_, { r,c }, sz);
+		}
 	}
 
 	if (min_crds == INT_MAX)
