@@ -4,6 +4,7 @@
 #include <tuple>
 #include <algorithm>
 #include <limits.h>
+#include <array>
 
 using namespace std;
 
@@ -11,8 +12,8 @@ using namespace std;
 #define N 10
 
 using COO = pair<int, int>;
-using M2D = vector<vector<int>>;
-M2D mat_(N, vector<int>(N));
+using M2D = array<array<int,10>,10>;
+M2D mat_;
 
 
 bool Covered(const M2D &mat, COO rc, int sz)
@@ -49,7 +50,7 @@ void traverse(M2D mat, COO rc, int sz)
 {
 	auto[r, c] = rc;
 
-	if (crds[sz] == 0) return; /*run out of card*/
+	if (crds[sz] == 0) return; 
 
 	if (!Covered(mat, rc, sz)) return;
 
@@ -66,7 +67,7 @@ void traverse(M2D mat, COO rc, int sz)
 			break;
 	}
 
-	if (cur == N * N) { /*sucess to cover the board*/
+	if (cur == N * N) { 
 		min_crds = min(min_crds,crdcnt);
 	}
 	else
