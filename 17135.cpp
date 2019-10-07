@@ -19,7 +19,10 @@ int main()
 			cin >> data[r][c];
 
 	vector<bool> tbl(M);
-	tbl[M - 1] = true; tbl[M - 2] = true; tbl[M - 3] = true;
+
+	tbl[M - 1] = true; 
+	tbl[M - 2] = true; 
+	tbl[M - 3] = true;
 
 
 	int mx_dead = 0;
