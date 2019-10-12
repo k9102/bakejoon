@@ -15,8 +15,7 @@ int min_ = INT_MAX;
 
 bool IsBlocked(int r, int c)
 {
-	auto v = mat_[r][c];
-	return (v == 'R' || v == 'B' || v == '#' || v == 'O') ? true : false;
+	return (mat_[r][c] != '.') ? true: false;
 }
 
 bool Roll(pair<int, int> &rp, int d)
@@ -38,34 +37,7 @@ void traverse(pair<int, int> rp, pair<int, int> bp, int rolls)
 
 	for (int d = 0; d < 4; d++)
 	{
-		bool rfirst = false;
-		switch (d)
-		{
-		case N:
-			if (rr < br) rfirst = true;
-			break;
-		case E:
-			if (rc > bc) rfirst = true;
-			break;
-		case S:
-			if (rr > br) rfirst = true;
-			break;
-		case W:
-			if (rc < bc) rfirst = true;
-			break;
-		}
-
-		int rret, bret;
-		if (rfirst)
-		{
-			rret = Roll(rp, d);
-			auto[rr, rc] = rp; if (!rret) mat_[rr][rc] = 'R'; bret = Roll(bp, d); mat_[rr][rc] = '.';
-		}
-		else
-		{
-			bret = Roll(bp, d);
-			auto[br, bc] = bp; if (!bret) mat_[br][bc] = 'B'; rret = Roll(rp, d); mat_[br][bc] = '.';
-		}
+		auto [rret, bret] = pair{ Roll(rp, d), Roll(bp, d) };
 
 		if (!bret)
 		{
@@ -75,6 +47,23 @@ void traverse(pair<int, int> rp, pair<int, int> bp, int rolls)
 			}
 			else
 			{
+				if (rp == bp)
+				{
+					bool rf = false; /*rfrist*/
+					switch (d) {
+						case N: if (rr < br) rf = true; break;
+						case E: if (rc > bc) rf = true; break;
+						case S: if (rr > br) rf = true; break;
+						case W: if (rc < bc) rf = true; break;
+					}
+					
+					if (auto[ir, ic] = mv_[d];rf) {
+						auto&[r, c] = bp; r -= ir; c -= ic;
+					} else {
+						auto&[r, c] = rp; r -= ir; c -= ic;
+					}
+				}
+
 				if (rp != pair{ rr, rc } || bp != pair{ br,bc }) traverse(rp, bp, rolls + 1);
 			}
 		}
@@ -95,7 +84,7 @@ int main()
 		{
 			auto &d = mat_[r][c];
 			cin >> d;
-			if (d == 'R') { rp = { r,c }; d = '.'; };
+			if (d == 'R') { rp = { r,c }; d = '.'; }
 			if (d == 'B') { bp = { r,c }; d = '.'; }
 		}
 	}
@@ -103,7 +92,6 @@ int main()
 	traverse(rp, bp, 0);
 
 	cout << (min_ == INT_MAX ? -1 : min_) << endl;
-
 
 	return 0;
 }
