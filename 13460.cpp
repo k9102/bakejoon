@@ -17,6 +17,7 @@ int mv[4][2] = { {-1,0},{0,1},{1,0},{0,-1} };
 enum {N,E,S,W};
 int min_ = INT_MAX;
 
+
 bool IsBlocked(int r,int c)
 {
 	auto v = mat_[r][c];
@@ -38,7 +39,10 @@ void traverse(pair<int,int> rp,pair<int,int> bp,int rolls)
 	auto[rr, rc] = rp;
 	auto[br, bc] = bp;
 
-	if (rolls_[rr][rc]>rolls && rolls < 10) rolls_[rr][rc] = rolls; else return;
+#ifdef DEBUG
+	rolls_[rr][rc] = min(rolls_[rr][rc],rolls);
+#endif
+	if (rolls >= 10) return;
 	
 	for (int d = 0; d < 4; d++)
 	{
@@ -71,7 +75,6 @@ void traverse(pair<int,int> rp,pair<int,int> bp,int rolls)
 			auto[br, bc] = bp; if (!bret) mat_[br][bc] = 'B'; rret = Roll(rp, d); mat_[br][bc] = '.';
 		}
 		
-	
 		if (!bret)
 		{
 			if (rret)
@@ -80,7 +83,7 @@ void traverse(pair<int,int> rp,pair<int,int> bp,int rolls)
 			}
 			else
 			{
-				traverse(rp, bp, rolls + 1);
+				if (rp != pair{ rr, rc } || bp != pair{ br,bc }) traverse(rp, bp, rolls + 1);
 			}
 		}
 	
@@ -100,7 +103,10 @@ int main()
 		{
 			auto &d = mat_[r][c];
 			cin >> d;
+
+#ifdef DEBUG
 			rolls_[r][c] = INT_MAX;
+#endif
 			if (d == 'R') { rp = { r,c }; d = '.';};
 			if (d == 'B') { bp = { r,c }; d = '.';}
 		}
@@ -109,5 +115,36 @@ int main()
 	traverse(rp, bp, 0);
 
 	cout << (min_==INT_MAX ? -1:min_) << endl;
+
+
+#ifdef DEBUG
+	for (int r = 0; r < n_; r++)
+	{
+		for (int c = 0; c < m_; c++)
+		{
+			auto d = mat_[r][c];
+			auto rs = rolls_[r][c];
+			if (d == '#') cout << d;
+			if (d == '.')
+				if (rs != INT_MAX) cout << rs; else cout << d;
+		}
+		cout << endl;
+	}
+#endif
+
 	return 0;
 }
+
+/*
+10 10
+##########
+#R.....#.#
+#...#B##.#
+#####.##.#
+#......#.#
+#.###.##.#
+#.#...##.#
+#.#.#.#..#
+#...#O.#.#
+##########
+*/
