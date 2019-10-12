@@ -1,49 +1,41 @@
 #include <iostream>
-#include <vector>
-#include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
 #include <limits.h>
-#include <array>
 
 using namespace std;
 
 int n_, m_;
 char mat_[10][10];
-int rolls_[10][10];
 
-int mv[4][2] = { {-1,0},{0,1},{1,0},{0,-1} };
-enum {N,E,S,W};
+int mv_[4][2] = { {-1,0},{0,1},{1,0},{0,-1} };
+enum { N, E, S, W };
 int min_ = INT_MAX;
 
 
-bool IsBlocked(int r,int c)
+bool IsBlocked(int r, int c)
 {
 	auto v = mat_[r][c];
-	return (v == 'R' || v == 'B' || v == '#' || v=='O') ? true : false;
+	return (v == 'R' || v == 'B' || v == '#' || v == 'O') ? true : false;
 }
 
-bool Roll(pair<int,int> &rp,int d)
+bool Roll(pair<int, int> &rp, int d)
 {
-	auto& [r, c] = rp;
-	auto[ir, ic] = mv[d];
+	auto&[r, c] = rp;
+	auto[ir, ic] = mv_[d];
 
-	while(!IsBlocked(r + ir, c + ic)) { r += ir; c += ic;}
+	while (!IsBlocked(r + ir, c + ic)) { r += ir; c += ic; }
 
-	return mat_[r + ir][c + ic] == 'O' ? true: false;
+	return mat_[r + ir][c + ic] == 'O' ? true : false;
 }
 
-void traverse(pair<int,int> rp,pair<int,int> bp,int rolls) 
+void traverse(pair<int, int> rp, pair<int, int> bp, int rolls)
 {
 	auto[rr, rc] = rp;
 	auto[br, bc] = bp;
 
-#ifdef DEBUG
-	rolls_[rr][rc] = min(rolls_[rr][rc],rolls);
-#endif
 	if (rolls >= 10) return;
-	
+
 	for (int d = 0; d < 4; d++)
 	{
 		bool rfirst = false;
@@ -67,14 +59,14 @@ void traverse(pair<int,int> rp,pair<int,int> bp,int rolls)
 		if (rfirst)
 		{
 			rret = Roll(rp, d);
-			auto[rr, rc] = rp; if(!rret) mat_[rr][rc] = 'R'; bret = Roll(bp, d); mat_[rr][rc] = '.';
+			auto[rr, rc] = rp; if (!rret) mat_[rr][rc] = 'R'; bret = Roll(bp, d); mat_[rr][rc] = '.';
 		}
 		else
 		{
 			bret = Roll(bp, d);
 			auto[br, bc] = bp; if (!bret) mat_[br][bc] = 'B'; rret = Roll(rp, d); mat_[br][bc] = '.';
 		}
-		
+
 		if (!bret)
 		{
 			if (rret)
@@ -86,7 +78,7 @@ void traverse(pair<int,int> rp,pair<int,int> bp,int rolls)
 				if (rp != pair{ rr, rc } || bp != pair{ br,bc }) traverse(rp, bp, rolls + 1);
 			}
 		}
-	
+
 		rp = { rr, rc };
 		bp = { br, bc };
 	}
@@ -96,55 +88,22 @@ int main()
 {
 	pair<int, int> rp, bp;
 	cin >> n_ >> m_;
-	
+
 	for (int r = 0; r < n_; r++)
 	{
 		for (int c = 0; c < m_; c++)
 		{
 			auto &d = mat_[r][c];
 			cin >> d;
-
-#ifdef DEBUG
-			rolls_[r][c] = INT_MAX;
-#endif
-			if (d == 'R') { rp = { r,c }; d = '.';};
-			if (d == 'B') { bp = { r,c }; d = '.';}
+			if (d == 'R') { rp = { r,c }; d = '.'; };
+			if (d == 'B') { bp = { r,c }; d = '.'; }
 		}
 	}
 
 	traverse(rp, bp, 0);
 
-	cout << (min_==INT_MAX ? -1:min_) << endl;
+	cout << (min_ == INT_MAX ? -1 : min_) << endl;
 
-
-#ifdef DEBUG
-	for (int r = 0; r < n_; r++)
-	{
-		for (int c = 0; c < m_; c++)
-		{
-			auto d = mat_[r][c];
-			auto rs = rolls_[r][c];
-			if (d == '#') cout << d;
-			if (d == '.')
-				if (rs != INT_MAX) cout << rs; else cout << d;
-		}
-		cout << endl;
-	}
-#endif
 
 	return 0;
 }
-
-/*
-10 10
-##########
-#R.....#.#
-#...#B##.#
-#####.##.#
-#......#.#
-#.###.##.#
-#.#...##.#
-#.#.#.#..#
-#...#O.#.#
-##########
-*/
