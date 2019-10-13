@@ -3,9 +3,6 @@
 #include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
-#include <limits.h>
-#include <array>
 #include <set>
 
 using namespace std;
@@ -16,10 +13,9 @@ map<int,int> cmd_;
 
 int n_, k_,l_;
 
-enum {W,E,S,N};
-int dr_ = E;
-int trn_[4][2] = { {S,N},{N,S},{E,W},{W,E} };
-rc mv_[4] = { {0,-1},{0,1},{1,0},{-1,0} };
+enum {N,E,S,W};
+unsigned char dr_ = E;
+rc mv_[4] = { {-1,0},{0,1},{1,0},{0,-1} };
 
 int main()
 {
@@ -32,16 +28,13 @@ int main()
 
 	cin >> l_;
 	for (int i = 0; i < l_; i++) {
-		int x;
-		char c;
-		cin >> x >> c;
-		cmd_[x]= c=='L' ? 0:1;
+		int x; char c;
+		cin >> x >> c; cmd_[x]= c=='L' ? -1:1;
 	}
 
 	int tm = 0;
 
-	while (true)
-	{
+	while (true) {
 		tm++;
 
 		auto[r, c] = sn_.back();
@@ -58,12 +51,12 @@ int main()
 		sn_.emplace_back(r, c);
 
 		auto ap = ap_.find(pair{ r,c });
-		if(ap==end(ap_)) sn_.erase(begin(sn_));
+		if (ap == end(ap_)) sn_.erase(begin(sn_)); else ap_.erase(ap);
 
 		auto cmd = cmd_.find(tm);
 		if (cmd != end(cmd_))
 		{
-			dr_ = trn_[dr_][cmd->second];
+			dr_ = dr_ + cmd->second;  dr_ &= 0b11;
 		}
 	}
 
