@@ -15,7 +15,7 @@ int n_, m_, x_, y_, k_;
 int map_[20][20];
 bool CanGo(int x, int y)
 {
-	return (x < 0 || x >= m_ || y < 0 || y >= n_) ? false : true;
+	return (x < 0 || x >= n_ || y < 0 || y >= m_) ? false : true;
 }
 
 int main()
@@ -35,7 +35,7 @@ int main()
 	{	
 		c--;
 		auto[ir, ic] = mv_[c];
-		if (!CanGo(x_ + ic, y_ + ir)) 
+		if (!CanGo(x_ + ir, y_ + ic)) 
 			continue;
 
 		auto[f,s] = tbl[c];
@@ -43,8 +43,8 @@ int main()
 		swap(dice_[U], dice_[s]);
 		swap(dice_[f], dice_[s]);
 
-		x_ += ic; y_ += ir;
-		auto &d = map_[y_][x_];
+		x_ += ir; y_ += ic;
+		auto &d = map_[x_][y_];
 		if (d == 0) d = dice_[D]; else { dice_[D] = d; d = 0; };
 
 		cout << dice_[U] << endl;
