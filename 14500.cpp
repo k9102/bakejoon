@@ -1,11 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
 #include <limits.h>
-#include <array>
 
 using namespace std;
 
@@ -18,7 +15,7 @@ pair<int,int> mv_[8] = {
 	{ 0,-1}        ,{ 0,1},
 	{ 1,-1},{ 1,0} ,{ 1,1}
 };
-inline bool Safe(int r,int c)
+inline bool CanGo(int r,int c)
 {
 	return (r < 0 || r >= n_ || c < 0 || c >= m_) ? false : true;
 }
@@ -31,7 +28,7 @@ void Traverse(int r, int c, int acc, int dp)
 		return;
 	}
 
-	if (!Safe(r, c) || vis_[r][c]) return;
+	if (!CanGo(r, c) || vis_[r][c]) return;
 
 	if (dp != 0)
 	{
@@ -39,7 +36,7 @@ void Traverse(int r, int c, int acc, int dp)
 		for (auto p : { 1,3,4,6 })
 		{
 			auto[ir, ic] = mv_[p];
-			if (Safe(r + ir, c + ic) && vis_[r + ir][c + ic]) { adj = true; break; }
+			if (CanGo(r + ir, c + ic) && vis_[r + ir][c + ic]) { adj = true; break; }
 		}
 
 		if (!adj) return;
