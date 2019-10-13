@@ -1,20 +1,15 @@
 #include <iostream>
 #include <vector>
-#include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
 #include <limits.h>
 #include <array>
 
 using namespace std;
 
-int n_, m_;
-array<array<int,8>,8> map_;
-array<array<int, 8>, 8> tmap_;
-vector<pair<int, int>> spc_;
-vector<pair<int, int>> vrs_;
-int max_ = INT_MIN;
+int n_, m_, max_ = INT_MIN;;
+array<array<int,8>,8> map_,tmap_;
+vector<pair<int, int>> spc_,vrs_;
 
 inline bool CanGo(int r, int c)
 {
@@ -22,9 +17,7 @@ inline bool CanGo(int r, int c)
 }
 void Traverse(int r, int c)
 {
-
 	if (!CanGo(r, c) || tmap_[r][c] != 0) return;
-	
 
 	tmap_[r][c] = 2;
 
