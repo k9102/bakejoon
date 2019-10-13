@@ -171,10 +171,10 @@ void SqueezeE(arr<arr<int>> &mat)
 void Traverse(arr<arr<int>> mat, int d)
 {
 	if (d == 5) {
-		for(int r=0;r<n_;r++)
-		for (int c = 0; c < n_; c++)
+		for (int r = 0; r < n_; r++)
 		{
-			max_ = max(mat[r][c], max_);
+			auto m = max_element(begin(mat[r]), begin(mat[r]) + n_);
+			max_ = max(max_, *m);
 		}
 		return;
 	}
