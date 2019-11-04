@@ -1,22 +1,19 @@
 #include <iostream>
 #include <vector>
-#include <map>
 #include <tuple>
 #include <algorithm>
-#include <numeric>
 #include <limits.h>
-#include <array>
 
 using namespace std;
 
 int n_;
 int mat_[20][20];
 
-int calc(const vector<int> &s)
+int calc(int (&s)[20])
 {
 	int sum = 0;
-	for (size_t i = 0; i < s.size(); i++)
-		for (size_t j = i + 1; j < s.size(); j++)
+	for (int i = 0; i < n_/2; i++)
+		for (int j = i + 1; j < n_/2; j++)
 		{
 			sum += mat_[s[i]][s[j]] + mat_[s[j]][s[i]];
 		}
@@ -39,11 +36,13 @@ int main()
 	vector<int> t(n_, 0);
 	fill_n(begin(t) + n_ / 2, n_ / 2, 1);
 
+	int s[20], l[20];
 	do {
-		vector<int> s,l;
+		auto[si, li] = pair{ 0,0 };
+
 		for (int i = 0; i < n_; i++)
 		{
-			if (t[i]) s.push_back(i); else l.push_back(i);
+			if (t[i]) s[si++]=i; else l[li++]=i;
 		}
 
 		auto[a, b] = pair{ calc(s),calc(l) };
